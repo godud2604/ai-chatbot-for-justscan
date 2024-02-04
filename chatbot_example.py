@@ -10,8 +10,8 @@ import ast
 from openai.embeddings_utils import get_embedding
 from streamlit_chat import message
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 folder_path = './data'
 file_name = 'embedding.csv'
@@ -22,7 +22,7 @@ if os.path.isfile(file_path):
     print(f"{file_path} 파일이 존재합니다.")
     df = pd.read_csv(file_path)
     df['embedding'] = df['embedding'].apply(ast.literal_eval)
-    
+
 else:
     # folder_path = './data' # data 폴더 경로
     # txt_files = [file for file in os.listdir(folder_path) if file.endswith('.txt')]  # txt 파일 목록
@@ -33,11 +33,9 @@ else:
     #     with open(txt_file_path, 'r', encoding='utf-8') as f:
     #         text = f.read() # 파일 내용 읽기
     #         data.append(text)
-    # print('data',data)
 
     # df = pd.DataFrame(data, columns=['text'])
 
-    # df2 = pd.read_csv(gloud_path)
     df = pd.read_csv(gloud_path)
 
     # 데이터프레임의 text 열에 대해서 embedding을 추출
