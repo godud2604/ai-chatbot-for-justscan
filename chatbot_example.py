@@ -24,18 +24,6 @@ if os.path.isfile(file_path):
     df['embedding'] = df['embedding'].apply(ast.literal_eval)
 
 else:
-    # folder_path = './data' # data 폴더 경로
-    # txt_files = [file for file in os.listdir(folder_path) if file.endswith('.txt')]  # txt 파일 목록
-
-    # data = []
-    # for file in txt_files:
-    #     txt_file_path = os.path.join(folder_path, file)
-    #     with open(txt_file_path, 'r', encoding='utf-8') as f:
-    #         text = f.read() # 파일 내용 읽기
-    #         data.append(text)
-
-    # df = pd.DataFrame(data, columns=['text'])
-
     df = pd.read_csv(gloud_path)
 
     # 데이터프레임의 text 열에 대해서 embedding을 추출
