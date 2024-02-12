@@ -3,7 +3,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 # CSV 파일 읽기
-df = pd.read_csv('./data/gloud-customer-center.csv')
+df = pd.read_csv('./data/customer-center.csv')
 
 # %%
 
@@ -39,6 +39,6 @@ def combine_text(row):
 df['text'] = df.apply(combine_text, axis=1)
 
 # 결과를 새로운 CSV 파일로 저장
-df[['text']].to_csv('./data/eda-gloud-customer-center.csv', index=False)
+df[['text']].to_csv('./data/eda-customer-center.csv', index=False)
 
 # %%

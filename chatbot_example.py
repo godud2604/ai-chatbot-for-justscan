@@ -13,10 +13,13 @@ from streamlit_chat import message
 # from dotenv import load_dotenv
 # load_dotenv()
 
+# openai.api_key = ''
+
 folder_path = './data'
 file_name = 'embedding.csv'
 file_path = os.path.join(folder_path, file_name)
-gloud_path = './data/eda-gloud-customer-center.csv'
+eda_customer_center_path = './data/eda-customer-center.csv'
+eda_wiki_path = './data/eda-wiki.csv'
 
 if os.path.isfile(file_path):
     print(f"{file_path} 파일이 존재합니다.")
@@ -24,7 +27,11 @@ if os.path.isfile(file_path):
     df['embedding'] = df['embedding'].apply(ast.literal_eval)
 
 else:
-    df = pd.read_csv(gloud_path)
+    df_customer_center = pd.read_csv(eda_customer_center_path)
+    df_wiki = pd.read_csv(eda_wiki_path)
+
+    # 병합된 데이터프레임 생성
+    df = pd.concat([df_customer_center, df_wiki], ignore_index=True)
 
     # 데이터프레임의 text 열에 대해서 embedding을 추출
     df['embedding'] = df.apply(lambda row: get_embedding(
@@ -50,7 +57,7 @@ def return_answer_candidate(df, query):
 def create_prompt(df, query):
     result = return_answer_candidate(df, query)
     system_role = f"""You are an artificial intelligence language model named "저스트 스캔" that specializes in summarizing \
-    and answering documents about just scan
+    and answering documents about just scan. You were developed by a developer named Lee Hae-young.
     You need to take a given document and return a very detailed summary of the document in the query language.
     Here are the document: 
             doc 1 :""" + str(result.iloc[0]['text']) + """
@@ -67,13 +74,37 @@ def create_prompt(df, query):
 
     return messages
 
+# # 대화 히스토리를 최적화
+# def manage_chat_history(messages, max_tokens=4096):
+#     # 메시지의 총 토큰 수 계산
+#     total_tokens = sum(len(tokenize_message(msg)) for msg in messages)
+
+#     # 토큰 수가 최대 허용치를 초과하는 경우 필요 없는 메시지 제거
+#     while total_tokens > max_tokens and messages:
+#         removed_tokens = len(tokenize_message(messages.pop(0)))
+#         total_tokens -= removed_tokens
+
+#     return messages
+
+def tokenize_message(message):
+    # 메시지를 토큰화하여 토큰 수 반환
+    # 실제로 사용하는 토큰화 방법에 따라 수정이 필요합니다.
+    return message['content'].split()
+
+
 def generate_response(messages):
-    result = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        temperature=0.4,
-        max_tokens=500)
-    return result['choices'][0]['message']['content']
+    try:
+        result = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=0.4,
+            max_tokens=500)
+        response_content = result['choices'][0]['message']['content']
+        return response_content
+    except Exception as e:
+        # st.error(f"오류 발생: {e}")
+        return "챗봇 응답 생성에 실패했습니다. 고객 센터에 문의해주세요."
+
 
 # st.image('images/ask_me_chatbot.png')
 
@@ -99,3 +130,4 @@ if st.session_state['generated']:
     for i in reversed(range(len(st.session_state['generated']))):
         message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
         message(st.session_state["generated"][i], key=str(i))
+# %%
