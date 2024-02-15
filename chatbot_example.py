@@ -13,33 +13,37 @@ from streamlit_chat import message
 # from dotenv import load_dotenv
 # load_dotenv()
 
-# openai.api_key = ''
+openai.api_key = ''
+# %%
+# folder_path = './data'
+# file_name = 'embedding.csv'
+# file_path = os.path.join(folder_path, file_name)
+# eda_customer_center_path = './data/eda-customer-center.csv'
+# eda_wiki_path = './data/eda-wiki.csv'
 
-folder_path = './data'
-file_name = 'embedding.csv'
-file_path = os.path.join(folder_path, file_name)
-eda_customer_center_path = './data/eda-customer-center.csv'
-eda_wiki_path = './data/eda-wiki.csv'
+# if os.path.isfile(file_path):
+#     print(f"{file_path} 파일이 존재합니다.")
+#     df = pd.read_csv(file_path)
+#     df['embedding'] = df['embedding'].apply(ast.literal_eval)
 
-if os.path.isfile(file_path):
-    print(f"{file_path} 파일이 존재합니다.")
-    df = pd.read_csv(file_path)
-    df['embedding'] = df['embedding'].apply(ast.literal_eval)
+# else:
+#     df_customer_center = pd.read_csv(eda_customer_center_path)
+#     df_wiki = pd.read_csv(eda_wiki_path)
 
-else:
-    df_customer_center = pd.read_csv(eda_customer_center_path)
-    df_wiki = pd.read_csv(eda_wiki_path)
+#     # 병합된 데이터프레임 생성
+#     df = pd.concat([df_customer_center, df_wiki], ignore_index=True)
 
-    # 병합된 데이터프레임 생성
-    df = pd.concat([df_customer_center, df_wiki], ignore_index=True)
+#     # 데이터프레임의 text 열에 대해서 embedding을 추출
+#     df['embedding'] = df.apply(lambda row: get_embedding(
+#         row.text,
+#         engine="text-embedding-ada-002"
+#     ), axis=1)
+#     df.to_csv(file_path, index=False, encoding='utf-8-sig')
 
-    # 데이터프레임의 text 열에 대해서 embedding을 추출
-    df['embedding'] = df.apply(lambda row: get_embedding(
-        row.text,
-        engine="text-embedding-ada-002"
-    ), axis=1)
-    df.to_csv(file_path, index=False, encoding='utf-8-sig')
-
+# %%
+df = pd.read_csv('./embedding_test.csv')
+df['embedding'] = df['embedding'].apply(ast.literal_eval)
+df.head()
 
 # %%
 def cos_sim(A, B):
